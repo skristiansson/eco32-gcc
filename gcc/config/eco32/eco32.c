@@ -333,7 +333,7 @@ eco32_compute_frame(void)
         && (!call_used_regs[regno]))
       cfun->machine->saved_reg_size += ECO32_REG_SIZE;
 
-  if (!current_function_is_leaf)
+  if (!crtl->is_leaf)
     {
       cfun->machine->save_ret = 1;
     }
