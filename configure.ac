@@ -662,6 +662,10 @@ case "${target}" in
   d30v-*-*)
     noconfigdirs="$noconfigdirs ${libgcj} gdb"
     ;;
+  eco32*)
+    noconfigdirs="$noconfigdirs target-libffi target-boehm-gc gdb"
+    unsupported_languages="$unsupported_languages fortran java"
+    ;;
   ep9312-*-elf | ep9312-*-coff)
     libgloss_dir=arm
     ;;

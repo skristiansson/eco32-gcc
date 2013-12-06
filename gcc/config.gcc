@@ -285,6 +285,10 @@ bfin*-*)
 crisv32-*)
 	cpu_type=cris
 	;;
+eco32*)
+	cpu_type=eco32
+	tmake_file=eco32/t-eco32
+	;;
 frv*)	cpu_type=frv
 	;;
 moxie*)	cpu_type=moxie
@@ -896,6 +900,11 @@ crx-*-elf)
 	tm_file="elfos.h newlib-stdint.h ${tm_file}"
 	extra_parts="crtbegin.o crtend.o"
 	use_collect2=no
+	;;
+eco32*)
+	#tm_file="elfos.h newlib-stdint.h netbsd.h netbsd-elf.h ${tm_file}"
+  tm_file="elfos.h newlib-stdint.h ${tm_file}"
+	tmake_file="${tmake_file} eco32/t-eco32"
 	;;
 fr30-*-elf)
 	tm_file="dbxelf.h elfos.h svr4.h newlib-stdint.h ${tm_file}"

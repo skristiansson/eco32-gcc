@@ -79,6 +79,9 @@ avr-*-*)
 bfin*-*)
 	cpu_type=bfin
 	;;
+eco32*)
+        cpu_type=eco32
+        ;;
 fido-*-*)
 	cpu_type=m68k
 	;;
@@ -247,6 +250,9 @@ cris-*-linux* | crisv32-*-linux*)
 	;;
 crx-*-elf)
 	;;
+eco32*)
+	tmake_file="eco32/t-eco32-softfp"
+ 	;;
 fido-*-elf)
 	;;
 fr30-*-elf)
