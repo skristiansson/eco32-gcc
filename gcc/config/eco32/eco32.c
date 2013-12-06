@@ -29,7 +29,8 @@ static bool eco32_return_in_memory (const_tree, const_tree);
 static bool eco32_frame_pointer_required(void);
 static bool eco32_can_eliminate(int, int);
 static bool eco32_must_pass_in_stack (enum machine_mode, const_tree);
-static void eco32_setup_incoming_varargs (CUMULATIVE_ARGS *, enum machine_mode, tree, int *, int);
+static void eco32_setup_incoming_varargs (cumulative_args_t, enum machine_mode,
+					  tree, int *, int);
 static void eco32_option_override (void);
 static rtx eco32_function_arg (cumulative_args_t, enum machine_mode, const_tree,
 			       bool);
@@ -573,23 +574,23 @@ eco32_num_arg_regs (enum machine_mode mode, tree type)
 }
 
 /* pushed in function prologue */
-void
-eco32_setup_incoming_varargs (CUMULATIVE_ARGS *arg_regs_used_so_far,
-			     enum machine_mode mode ATTRIBUTE_UNUSED,
-			     tree type ATTRIBUTE_UNUSED,
-			     int *pretend_size,
-			     int second_time ATTRIBUTE_UNUSED)
+static void
+eco32_setup_incoming_varargs (cumulative_args_t cum_v,
+			      enum machine_mode mode, tree type,
+			      int *pretend_size, int no_rtl)
 {
+  CUMULATIVE_ARGS *cum = get_cumulative_args (cum_v);
+
   int size;
   /* All BLKmode values are passed by reference.  */
   gcc_assert (mode != BLKmode);
-  
-    if (targetm.calls.strict_argument_naming (arg_regs_used_so_far))
+
+  if (targetm.calls.strict_argument_naming (cum_v))
     /* If TARGET_STRICT_ARGUMENT_NAMING returns true, then the last named
        arg must not be treated as an anonymous arg.  */
-    arg_regs_used_so_far += eco32_num_arg_regs (mode, type);
+    *cum += eco32_num_arg_regs (mode, type);
 
-  size = ECO32_NUM_ARG_REGS - (* arg_regs_used_so_far);
+  size = ECO32_NUM_ARG_REGS - (*cum);
   if (size <= 0)
     return;
 
