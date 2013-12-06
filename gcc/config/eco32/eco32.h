@@ -143,28 +143,6 @@ eco32_reg_class(R)
  argument of `FUNCTION_ARG' and other related values.  */
 #define CUMULATIVE_ARGS int
 
-#define OVERRIDE_OPTIONS eco32_override_options()
-
-
-/* On the ECO32 the first ECO32_MAX_PARM_REGS args are normally in registers
-   and the rest are pushed.
-#define FUNCTION_ARG(CUM, MODE, TYPE, NAMED) \
-	(((CUM) <= ECO32_LAST_ARG_REGNO) ? gen_rtx_REG ((MODE), (CUM)) : 0)*/
-	
-#define FUNCTION_ARG(CUM, MODE, TYPE, NAMED)			\
-  (  (NAMED) == 0                    ? NULL_RTX			\
-   : targetm.calls.must_pass_in_stack (MODE, TYPE) ? NULL_RTX	\
-   : (CUM) >= ECO32_NUM_ARG_REGS      ? NULL_RTX			\
-   : gen_rtx_REG (MODE, CUM + ECO32_FIRST_ARG_REGNO))
-
-
-/* Update the data in CUM to advance over an argument
-   of mode MODE and data type TYPE.
-   (TYPE is null for libcalls where that information may not be available.)  */
-#define FUNCTION_ARG_ADVANCE(CUM, MODE, TYPE, NAMED) \
-	(CUM) += eco32_num_arg_regs((MODE), (TYPE))*(NAMED)
-
-
 /* If defined, the maximum amount of space required 
  for outgoing arguments will be computed and placed into the variable
  `current_function_outgoing_args_size'.  No space will be pushed
@@ -172,8 +150,6 @@ eco32_reg_class(R)
  increase the stack frame size by this amount.  */
 #define ACCUMULATE_OUTGOING_ARGS 1
 
-#define LEGITIMATE_CONSTANT_P(X) 1
-#define RETURN_POPS_ARGS(DECL, FUNTYPE, SIZE) 0
 /* Return the maximum number of consecutive registers
    needed to represent mode MODE in a register of class CLASS.  */
 #define CLASS_MAX_NREGS(CLASS, MODE) \

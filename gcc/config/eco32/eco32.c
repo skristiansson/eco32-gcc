@@ -31,6 +31,13 @@ static bool eco32_frame_pointer_required(void);
 static bool eco32_can_eliminate(int, int);
 static bool eco32_must_pass_in_stack (enum machine_mode, const_tree);
 static void eco32_setup_incoming_varargs (CUMULATIVE_ARGS *, enum machine_mode, tree, int *, int);
+static void eco32_option_override (void);
+static rtx eco32_function_arg (cumulative_args_t, enum machine_mode, const_tree,
+			       bool);
+static void eco32_function_arg_advance (cumulative_args_t, enum machine_mode,
+					const_tree, bool);
+static bool eco32_legitimate_constant_p (enum machine_mode, rtx);
+static int eco32_return_pops_args (tree, tree, int);
 
 
 /* Initialize the GCC target structure.  */
@@ -55,6 +62,21 @@ static void eco32_setup_incoming_varargs (CUMULATIVE_ARGS *, enum machine_mode, 
 
 #undef TARGET_SETUP_INCOMING_VARARGS
 #define TARGET_SETUP_INCOMING_VARARGS eco32_setup_incoming_varargs
+
+#undef TARGET_OPTION_OVERRIDE
+#define TARGET_OPTION_OVERRIDE eco32_option_override
+
+#undef TARGET_FUNCTION_ARG
+#define TARGET_FUNCTION_ARG eco32_function_arg
+
+#undef TARGET_FUNCTION_ARG_ADVANCE
+#define TARGET_FUNCTION_ARG_ADVANCE eco32_function_arg_advance
+
+#undef TARGET_LEGITIMATE_CONSTANT_P
+#define TARGET_LEGITIMATE_CONSTANT_P eco32_legitimate_constant_p
+
+#undef TARGET_RETURN_POPS_ARGS
+#define TARGET_RETURN_POPS_ARGS eco32_return_pops_args
 
 struct gcc_target targetm = TARGET_INITIALIZER;
 
@@ -98,10 +120,10 @@ eco32_init_machine_status (void)
 	  ggc_alloc_cleared (sizeof (struct machine_function)));
 }
 
-/* The OPTION_OVERRIDE worker.
+/* The TARGET_OPTION_OVERRIDE worker.
  All this curently does is set init_machine_status.  */
 void
-eco32_override_options(void)
+eco32_option_override(void)
 {
   init_machine_status = eco32_init_machine_status;
 }
@@ -141,6 +163,33 @@ eco32_operand_lossage(const char *msgid, rtx op)
 {
   debug_rtx(op);
   output_operand_lossage("%s", msgid);
+}
+
+/* On the ECO32 the first ECO32_MAX_PARM_REGS args are normally in registers
+   and the rest are pushed. */
+static rtx
+eco32_function_arg (cumulative_args_t cum_v, enum machine_mode mode,
+		    const_tree type, bool named)
+{
+  CUMULATIVE_ARGS *cum = get_cumulative_args (cum_v);
+
+  if (targetm.calls.must_pass_in_stack (mode, type))
+    return NULL_RTX;
+
+  if (!named || (*cum >= ECO32_NUM_ARG_REGS))
+    return NULL_RTX;
+
+  return gen_rtx_REG (mode, *cum + ECO32_FIRST_ARG_REGNO);
+}
+
+/* Update the data in CUM to advance over an argument
+   of mode MODE and data type TYPE.
+   (TYPE is null for libcalls where that information may not be available.)  */
+static void
+eco32_function_arg_advance (cumulative_args_t cum, enum machine_mode mode,
+			    const_tree type, bool named ATTRIBUTE_UNUSED)
+{
+  *get_cumulative_args (cum) += eco32_num_arg_regs (mode, type);
 }
 
 /* The PRINT_OPERAND_ADDRESS worker.  */
@@ -546,6 +595,21 @@ eco32_setup_incoming_varargs (CUMULATIVE_ARGS *arg_regs_used_so_far,
     return;
 
   * pretend_size = (size * UNITS_PER_WORD);
+}
+
+static bool
+eco32_legitimate_constant_p (enum machine_mode mode ATTRIBUTE_UNUSED,
+			     rtx x ATTRIBUTE_UNUSED)
+{
+  return true;
+}
+
+static int
+eco32_return_pops_args (tree fundecl ATTRIBUTE_UNUSED,
+			tree funtype ATTRIBUTE_UNUSED,
+			int size ATTRIBUTE_UNUSED)
+{
+  return 0;
 }
 
 #include "gt-eco32.h"
