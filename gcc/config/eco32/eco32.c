@@ -119,8 +119,7 @@ struct GTY(()) machine_function
 static struct machine_function *
 eco32_init_machine_status (void)
 {
-  return ((struct machine_function *)
-	  ggc_alloc_cleared (sizeof (struct machine_function)));
+  return ggc_alloc_cleared_machine_function ();
 }
 
 /* The TARGET_OPTION_OVERRIDE worker.
