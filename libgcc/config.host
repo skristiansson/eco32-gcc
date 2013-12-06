@@ -102,6 +102,9 @@ bfin*-*)
 	;;
 cr16-*-*)
 	;;
+eco32*)
+        cpu_type=eco32
+        ;;
 fido-*-*)
 	cpu_type=m68k
 	;;
@@ -405,9 +408,16 @@ cris-*-elf)
 cris-*-linux* | crisv32-*-linux*)
 	tmake_file="$tmake_file cris/t-cris t-fdpbit cris/t-linux"
 	;;
+crx-*-elf)
+	;;
 epiphany-*-elf*)
 	tmake_file="epiphany/t-epiphany t-fdpbit epiphany/t-custom-eqsf"
 	extra_parts="$extra_parts crti.o crtint.o crtrunc.o crtm1reg-r43.o crtm1reg-r63.o crtn.o"
+ 	;;
+eco32*)
+	tmake_file="eco32/t-eco32-softfp"
+ 	;;
+fido-*-elf)
 	;;
 fr30-*-elf)
 	tmake_file="$tmake_file fr30/t-fr30 t-fdpbit"

@@ -963,7 +963,14 @@ case "${target}" in
     noconfigdirs="$noconfigdirs target-libgloss"
     ;;
   d30v-*-*)
-    noconfigdirs="$noconfigdirs gdb"
+    noconfigdirs="$noconfigdirs ${libgcj} gdb"
+    ;;
+  eco32*)
+    noconfigdirs="$noconfigdirs target-libffi target-boehm-gc gdb"
+    unsupported_languages="$unsupported_languages fortran java"
+    ;;
+  ep9312-*-elf | ep9312-*-coff)
+    libgloss_dir=arm
     ;;
   fr30-*-elf*)
     noconfigdirs="$noconfigdirs gdb"
