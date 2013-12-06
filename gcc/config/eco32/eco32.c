@@ -24,7 +24,8 @@
 #include "tm-constrs.h"
 
 /* The Global `targetm' Variable.  */
-static bool eco32_pass_by_reference (CUMULATIVE_ARGS *, enum machine_mode, const_tree, bool);
+static bool eco32_pass_by_reference (cumulative_args_t, enum machine_mode,
+				     const_tree, bool);
 static bool eco32_return_in_memory (const_tree, const_tree);
 static bool eco32_frame_pointer_required(void);
 static bool eco32_can_eliminate(int, int);
@@ -514,9 +515,9 @@ eco32_initial_elimination_offset(int from, int to)
 /* Return non-zero if the function argument described by TYPE is to be
  passed by reference.  */
 static bool
-eco32_pass_by_reference (CUMULATIVE_ARGS* cum ATTRIBUTE_UNUSED,
-enum machine_mode mode, const_tree type,
-bool named ATTRIBUTE_UNUSED)
+eco32_pass_by_reference (cumulative_args_t cum ATTRIBUTE_UNUSED,
+			 enum machine_mode mode, const_tree type,
+			 bool named ATTRIBUTE_UNUSED)
 {
 unsigned HOST_WIDE_INT size;
 
