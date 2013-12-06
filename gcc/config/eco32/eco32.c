@@ -38,6 +38,7 @@ static void eco32_function_arg_advance (cumulative_args_t, enum machine_mode,
 					const_tree, bool);
 static bool eco32_legitimate_constant_p (enum machine_mode, rtx);
 static int eco32_return_pops_args (tree, tree, int);
+static int eco32_num_arg_regs (enum machine_mode, const_tree);
 
 
 /* Initialize the GCC target structure.  */
@@ -557,8 +558,8 @@ eco32_must_pass_in_stack (enum machine_mode mode, const_tree type)
 
 /* Compute the number of word sized registers needed to hold a
    function argument of mode INT_MODE and tree type TYPE.  */
-int
-eco32_num_arg_regs (enum machine_mode mode, tree type)
+static int
+eco32_num_arg_regs (enum machine_mode mode, const_tree type)
 {
   int size;
 
