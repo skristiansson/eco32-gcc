@@ -207,10 +207,8 @@ eco32_reg_class(R)
 
 /* A C expression whose value is RTL representing the location of the
  incoming return address at the beginning of any function, before
- the prologue. 
-#define INCOMING_RETURN_ADDR_RTX					\
-  gen_frame_mem (Pmode,							\
-		 plus_constant (return_address_pointer_rtx, 0)) */
+ the prologue. */
+#define INCOMING_RETURN_ADDR_RTX gen_rtx_REG (SImode, eco32_RA)
 
 /* Describe how we implement __builtin_eh_return.
 #define EH_RETURN_DATA_REGNO(N)	((N) < 4 ? (N+2) : INVALID_REGNUM)  */
