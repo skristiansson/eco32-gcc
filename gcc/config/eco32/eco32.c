@@ -448,7 +448,6 @@ eco32_expand_epilogue(void)
       insn = gen_movsi(reg,
           gen_rtx_MEM(SImode, slot));
       insn = emit(insn);
-      RTX_FRAME_RELATED_P(insn) = 1;
     }
 
   if (cfun->machine->saved_reg_size != 0)
@@ -467,7 +466,6 @@ eco32_expand_epilogue(void)
 			insn = gen_movsi(reg,
 			gen_rtx_MEM(SImode, slot));
 			insn = emit(insn);
-			RTX_FRAME_RELATED_P(insn) = 1;
 		}
 	}
     }	
@@ -480,7 +478,6 @@ eco32_expand_epilogue(void)
                   stack_pointer_rtx,
                   GEN_INT(
                       cfun->machine->size_for_adjusting_sp)));
-      RTX_FRAME_RELATED_P(insn) = 1;
     }
   emit_jump_insn (gen_returner());
   }
