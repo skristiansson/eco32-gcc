@@ -415,7 +415,7 @@ epiphany-*-elf*)
 	extra_parts="$extra_parts crti.o crtint.o crtrunc.o crtm1reg-r43.o crtm1reg-r63.o crtn.o"
  	;;
 eco32*)
-	tmake_file="eco32/t-eco32-softfp"
+	tmake_file="$tmake_file eco32/t-eco32 t-softfp-sfdf t-softfp"
  	;;
 fido-*-elf)
 	;;
