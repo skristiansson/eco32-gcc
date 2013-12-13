@@ -224,10 +224,8 @@ eco32_print_operand_address(FILE *file, rtx x)
         if (GET_CODE(XEXP(plus, 0)) == SYMBOL_REF
             && CONST_INT_P(XEXP(plus, 1)))
           {
-            fprintf(file, "%s,%ld",
-                reg_names[REGNO(XEXP(x, 0))],
-                INTVAL(XEXP(plus, 1)));
-                //output_addr_const(file,XEXP(plus, 0));
+	    fprintf (file, "%s,", reg_names[REGNO (XEXP (x, 0))]);
+	    output_addr_const (file, plus);
           }
         else
           abort();
