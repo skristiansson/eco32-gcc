@@ -506,6 +506,24 @@ eco32_initial_elimination_offset(int from, int to)
 	return ret;
 }
 
+/* Implement RETURN_ADDR_RTX (COUNT, FRAMEADDR).
+
+   We currently only support calculating the return address for the
+   current frame. */
+rtx
+eco32_return_addr_rtx (int count, rtx frame ATTRIBUTE_UNUSED)
+{
+  if (count)
+    return NULL_RTX;
+
+  eco32_compute_frame ();
+
+  if (cfun->machine->save_ret)
+    return gen_rtx_MEM (Pmode, plus_constant (Pmode, arg_pointer_rtx,
+					      -UNITS_PER_WORD));
+
+  return get_hard_reg_initial_val (Pmode, RETURN_ADDRESS_REGNUM);
+}
 
 /* Return non-zero if the function argument described by TYPE is to be
  passed by reference.  */

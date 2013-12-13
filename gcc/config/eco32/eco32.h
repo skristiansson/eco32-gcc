@@ -210,6 +210,17 @@ eco32_reg_class(R)
  the prologue. */
 #define INCOMING_RETURN_ADDR_RTX gen_rtx_REG (SImode, eco32_RA)
 
+/* A C expression whose value is RTL representing the value of the
+   return address for the frame COUNT steps up from the current
+   frame, after the prologue.  FRAMEADDR is the frame pointer of the
+   COUNT frame, or the frame pointer of the COUNT - 1 frame if
+   `RETURN_ADDR_IN_PREVIOUS_FRAME' is defined.
+
+   The value of the expression must always be the correct address when
+   COUNT is zero, but may be `NULL_RTX' if there is not way to
+   determine the return address of other frames. */
+#define RETURN_ADDR_RTX eco32_return_addr_rtx
+
 /* Describe how we implement __builtin_eh_return.
 #define EH_RETURN_DATA_REGNO(N)	((N) < 4 ? (N+2) : INVALID_REGNUM)  */
 
