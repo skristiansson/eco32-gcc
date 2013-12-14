@@ -12,12 +12,10 @@
 #define STARTFILE_SPEC "crt0%O%s" 
 
 #undef  ENDFILE_SPEC
-#define ENDFILE_SPEC "end%O%s" 
-/*
+#define ENDFILE_SPEC ""
+
 #undef LIB_SPEC
-#define LIB_SPEC "%{!shared:%{!symbolic:-lc}}"
-#define LIB_SPEC ""
-*/
+#define LIB_SPEC "%{!g:-lc} %{g:-lg} -leco32"
 
 /* Layout of Source Language Data Types */
 
