@@ -353,22 +353,23 @@ eco32_expand_prologue(void)
   rtx insn, reg, slot;
 
   eco32_compute_frame();
-	
-	/* push args into their respective stack space */
-  if(cfun->machine->pretend_size>0)
-  {
-	temp=cfun->machine->pretend_size-UNITS_PER_WORD;
-	for(regno=ECO32_LAST_ARG_REGNO;regno>=ECO32_FIRST_ARG_REGNO;regno--)
+
+  /* push args into their respective stack space */
+  if (cfun->machine->pretend_size)
+    {
+      temp = ECO32_MAX_PARM_REGS*UNITS_PER_WORD - cfun->machine->pretend_size;
+      for (regno = ECO32_FIRST_ARG_REGNO + temp/UNITS_PER_WORD;
+	   regno <= ECO32_LAST_ARG_REGNO; regno++)
 	{
-		reg = gen_rtx_REG(SImode, regno);
-        slot = gen_rtx_PLUS(SImode,stack_pointer_rtx, GEN_INT(temp));
-        insn = gen_movsi(gen_rtx_MEM(SImode, slot), reg);
-        insn = emit(insn);
-        RTX_FRAME_RELATED_P(insn) = 1;
-		temp-=UNITS_PER_WORD;
+	  reg = gen_rtx_REG (SImode, regno);
+	  slot = gen_rtx_PLUS (SImode, stack_pointer_rtx, GEN_INT(temp));
+	  insn = gen_movsi (gen_rtx_MEM (SImode, slot), reg);
+	  insn = emit (insn);
+	  RTX_FRAME_RELATED_P (insn) = 1;
+	  temp += UNITS_PER_WORD;
 	}
-  }
-	
+    }
+
   /* adjust sp size */
   if (cfun->machine->size_for_adjusting_sp > 0)
     {
