@@ -32,6 +32,10 @@
 #elif defined (__MICROBLAZE__)
 /* We cannot rely on division by zero generating a trap. */
 # define DO_TEST 0
+#elif defined (__eco32__)
+  /* eco32 divisions do trap by default, but libgloss targets do not
+     intercept the trap and raise a SIGFPE. */
+# define DO_TEST 0
 #elif defined (__epiphany__)
   /* Epiphany does not have hardware division, and the software implementation
      has truly undefined behaviour for division by 0.  */
