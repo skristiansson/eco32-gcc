@@ -41,7 +41,8 @@ static void eco32_function_arg_advance (cumulative_args_t, enum machine_mode,
 static bool eco32_legitimate_constant_p (enum machine_mode, rtx);
 static int eco32_return_pops_args (tree, tree, int);
 static int eco32_num_arg_regs (enum machine_mode, const_tree);
-
+static int eco32_arg_partial_bytes (cumulative_args_t, enum machine_mode, tree,
+				    bool);
 
 /* Initialize the GCC target structure.  */
 
@@ -80,6 +81,9 @@ static int eco32_num_arg_regs (enum machine_mode, const_tree);
 
 #undef TARGET_RETURN_POPS_ARGS
 #define TARGET_RETURN_POPS_ARGS eco32_return_pops_args
+
+#undef TARGET_ARG_PARTIAL_BYTES
+#define TARGET_ARG_PARTIAL_BYTES eco32_arg_partial_bytes
 
 struct gcc_target targetm = TARGET_INITIALIZER;
 
@@ -505,6 +509,25 @@ eco32_initial_elimination_offset(int from, int to)
 	}
 	
 	return ret;
+}
+
+static int
+eco32_arg_partial_bytes (cumulative_args_t cum_v, enum machine_mode mode,
+			tree type, bool named ATTRIBUTE_UNUSED)
+{
+  CUMULATIVE_ARGS *cum = get_cumulative_args (cum_v);
+
+  int words;
+  unsigned int size = eco32_num_arg_regs (mode, type);
+
+  if (*cum >= ECO32_MAX_PARM_REGS)
+    words = 0;
+  else if ((*cum + size) > ECO32_MAX_PARM_REGS)
+    words = (*cum + size) - ECO32_MAX_PARM_REGS;
+  else
+    words = 0;
+
+  return words * UNITS_PER_WORD;
 }
 
 /* Implement RETURN_ADDR_RTX (COUNT, FRAMEADDR).
