@@ -32,7 +32,7 @@
 #elif defined (__MICROBLAZE__)
 /* We cannot rely on division by zero generating a trap. */
 # define DO_TEST 0
-#elif defined (__eco32__)
+#elif defined (__ECO32__)
   /* eco32 divisions do trap by default, but libgloss targets do not
      intercept the trap and raise a SIGFPE. */
 # define DO_TEST 0
