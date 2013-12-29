@@ -358,22 +358,6 @@ eco32_expand_prologue(void)
 
   eco32_compute_frame();
 
-  /* push args into their respective stack space */
-  if (cfun->machine->pretend_size)
-    {
-      temp = ECO32_MAX_PARM_REGS*UNITS_PER_WORD - cfun->machine->pretend_size;
-      for (regno = ECO32_FIRST_ARG_REGNO + temp/UNITS_PER_WORD;
-	   regno <= ECO32_LAST_ARG_REGNO; regno++)
-	{
-	  reg = gen_rtx_REG (SImode, regno);
-	  slot = gen_rtx_PLUS (SImode, stack_pointer_rtx, GEN_INT(temp));
-	  insn = gen_movsi (gen_rtx_MEM (SImode, slot), reg);
-	  insn = emit (insn);
-	  RTX_FRAME_RELATED_P (insn) = 1;
-	  temp += UNITS_PER_WORD;
-	}
-    }
-
   /* adjust sp size */
   if (cfun->machine->size_for_adjusting_sp > 0)
     {
@@ -612,15 +596,19 @@ eco32_num_arg_regs (enum machine_mode mode, const_tree type)
   return (size + UNITS_PER_WORD - 1) / UNITS_PER_WORD;
 }
 
-/* pushed in function prologue */
+/* Setup incoming varargs by copying the anonymous argument register into
+   their respective spot on the stack */
 static void
 eco32_setup_incoming_varargs (cumulative_args_t cum_v,
 			      enum machine_mode mode, tree type,
 			      int *pretend_size, int no_rtl)
 {
   CUMULATIVE_ARGS *cum = get_cumulative_args (cum_v);
+  int first_anon_arg;
 
-  int size;
+  if (no_rtl)
+    return;
+
   /* All BLKmode values are passed by reference.  */
   gcc_assert (mode != BLKmode);
 
@@ -629,11 +617,20 @@ eco32_setup_incoming_varargs (cumulative_args_t cum_v,
        arg must not be treated as an anonymous arg.  */
     *cum += eco32_num_arg_regs (mode, type);
 
-  size = ECO32_NUM_ARG_REGS - (*cum);
-  if (size <= 0)
-    return;
+  first_anon_arg = *cum + ECO32_FIRST_ARG_REGNO;
 
-  * pretend_size = (size * UNITS_PER_WORD);
+  if (first_anon_arg < (ECO32_FIRST_ARG_REGNO + ECO32_NUM_ARG_REGS))
+    {
+      int size = ECO32_FIRST_ARG_REGNO + ECO32_NUM_ARG_REGS - first_anon_arg;
+      rtx regblock;
+      int offset = (first_anon_arg - ECO32_FIRST_ARG_REGNO) * UNITS_PER_WORD;
+
+      regblock = gen_rtx_MEM (BLKmode,
+			      plus_constant (Pmode, arg_pointer_rtx, offset));
+      move_block_from_reg (first_anon_arg, regblock, size);
+
+      *pretend_size = size * UNITS_PER_WORD;
+    }
 }
 
 static bool
