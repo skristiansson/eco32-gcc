@@ -83,8 +83,8 @@
 (define_insn "mulsi3"
   [(set (match_operand:SI 0 "register_operand" "=r,r")
 	  (mult:SI
-	   (sign_extend:SI (match_operand:SI 1 "register_operand" "r,r"))
-	   (sign_extend:SI (match_operand:SI 2 "nonmemory_operand" "r,i"))))]
+	   (match_operand:SI 1 "register_operand" "r,r")
+	   (match_operand:SI 2 "nonmemory_operand" "r,i")))]
   ""
   "@
   mul  %0,%1,%2
