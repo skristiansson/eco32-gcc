@@ -260,13 +260,19 @@ eco32_print_operand(FILE *file, rtx x, int code)
    (zero-modifier) output the operand.  */
   switch (code)
     {
-  case 0:
-    /* No code, print as usual.  */
-    break;
+    case 0:
+      /* No code, print as usual.  */
+      break;
 
-  default:
-    LOSE_AND_RETURN(
-        "invalid operand modifier letter", x);
+    case 'H':
+      if (GET_CODE (x) == REG)
+	{
+	  fprintf (file, "%s", reg_names[REGNO (x) + 1]);
+	  return;
+	}
+      /* fall-through */
+    default:
+      LOSE_AND_RETURN ("invalid operand modifier letter", x);
     }
 
   /* Print an operand as without a modifier letter.  */
