@@ -1020,10 +1020,13 @@ epiphany-*-elf )
 	tm_defines="${tm_defines} EPIPHANY_STACK_OFFSET=${with_stack_offset:-8}"
 	extra_headers="epiphany_intrinsics.h"
 	;;
-eco32*)
-	#tm_file="elfos.h newlib-stdint.h netbsd.h netbsd-elf.h ${tm_file}"
-  tm_file="elfos.h newlib-stdint.h ${tm_file}"
+eco32-*-elf)
+	tm_file="elfos.h newlib-stdint.h ${tm_file}"
 	tmake_file="${tmake_file} eco32/t-eco32"
+	;;
+eco32-*-linux*)
+	tm_file="dbxelf.h elfos.h gnu-user.h linux.h glibc-stdint.h ${tm_file} eco32/linux.h"
+	tmake_file="${tmake_file} eco32/t-eco32 "
 	;;
 fr30-*-elf)
 	tm_file="dbxelf.h elfos.h newlib-stdint.h ${tm_file}"
