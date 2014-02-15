@@ -44,7 +44,7 @@ enum reg_class
 #define REG_CLASS_CONTENTS  \
 {  \
 {0x00000000},   \
-{0xB8FFFFFC},   \
+{0xBFFFFFFC},   \
 {0xFFFFFFFF}    \
 }
 
